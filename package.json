@@ -8,7 +8,7 @@
   "license": "AGPL-3.0-or-later",
   "private": false,
   "scripts": {
-    "start": "parcel",
+    "start": "parcel --no-cache",
     "build": "parcel build",
     "prettier": "prettier --write src/"
   },
