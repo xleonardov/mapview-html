@@ -75,7 +75,6 @@ export const subscribe = async ({
   onNoteReceived,
   limit = 200,
 }: SubscribeParams) => {
-  // TODO - Start a subscription, unpack events, return on EOSE
   const getEventsForSpecificAuthor = typeof publicKey !== "undefined";
 
   const eventsFilter: Filter = getEventsForSpecificAuthor
