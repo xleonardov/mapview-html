@@ -1,0 +1,17 @@
+{
+  "name": "nostr-map",
+  "version": "0.1.0",
+  "description": "NOSTR notes on maps",
+  "source": "src/index.html",
+  "repository": "git@github.com:chmac/nostr-map.git",
+  "author": "Simon & Callum",
+  "license": "AGPL-3.0-or-later",
+  "private": false,
+  "scripts": {
+    "start": "parcel",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "parcel": "^2.8.3"
+  }
+}
