@@ -88,12 +88,13 @@ export const subscribe = async ({
     noteEvents.push(event);
   };
 
-  const eventSubscriptions = _subscribe({
+  const noteSubscriptions = _subscribe({
     filters: [eventsFilterWithLimit],
     onEvent: onNoteEvent,
   });
-  await Promise.race(eventSubscriptions);
+  await Promise.race(noteSubscriptions);
 
+  // TODO - Deduplicate authors here
   const authors = getEventsForSpecificAuthor
     ? [publicKey]
     : noteEvents.map((event) => getPublicKeyFromEvent({ event }));
