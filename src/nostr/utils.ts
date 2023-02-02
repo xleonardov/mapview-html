@@ -100,3 +100,7 @@ export const signEventWithPrivateKey = ({
   const signed = { ...toSign, sig };
   return signed;
 };
+
+export const uniq = <T>(input: T[]): T[] => {
+  return input.filter((val, index, input) => index === input.indexOf(val));
+};

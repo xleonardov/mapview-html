@@ -6,6 +6,7 @@ import {
   getProfileFromEvent,
   getPublicKeyFromEvent,
   getTagFirstValueFromEvent,
+  uniq,
 } from "./utils";
 
 const eventToNoteMinusProfile = ({
@@ -35,30 +36,17 @@ const eventToNoteMinusProfile = ({
   };
 };
 
-const eventsToNotes = ({
-  noteEvents,
-  profileEvents,
+const eventToNote = ({
+  event,
+  profiles,
 }: {
-  noteEvents: NostrEvent[];
-  profileEvents: NostrEvent[];
-}) => {
-  const profiles = profileEvents.reduce<{ [publicKey: string]: Profile }>(
-    (profiles, event) => {
-      const profile = getProfileFromEvent({ event });
-      const publicKey = getPublicKeyFromEvent({ event });
-      return { ...profiles, [publicKey]: profile };
-    },
-    {}
-  );
-
-  const notes = noteEvents.map((event): Note => {
-    const baseNote = eventToNoteMinusProfile({ event });
-    const profile = profiles[baseNote.authorPublicKey];
-    const authorName = profile?.name || "";
-    return { ...baseNote, authorName };
-  });
-
-  return notes;
+  event: NostrEvent;
+  profiles: { [publicKey: string]: Profile };
+}): Note => {
+  const baseNote = eventToNoteMinusProfile({ event });
+  const profile = profiles[baseNote.authorPublicKey];
+  const authorName = profile?.name || "";
+  return { ...baseNote, authorName };
 };
 
 type SubscribeParams = {
@@ -75,6 +63,9 @@ export const subscribe = async ({
   onNoteReceived,
   limit = 200,
 }: SubscribeParams) => {
+  let gotNotesEose = false;
+  const profiles: { [publicKey: string]: Profile } = {};
+
   const getEventsForSpecificAuthor = typeof publicKey !== "undefined";
 
   const eventsFilter: Filter = getEventsForSpecificAuthor
@@ -85,7 +76,13 @@ export const subscribe = async ({
   const noteEvents: NostrEvent[] = [];
 
   const onNoteEvent = (event: NostrEvent) => {
-    noteEvents.push(event);
+    if (!gotNotesEose) {
+      noteEvents.push(event);
+      return;
+    }
+
+    const note = eventToNote({ event, profiles });
+    onNoteReceived(note);
   };
 
   const noteSubscriptions = _subscribe({
@@ -93,11 +90,12 @@ export const subscribe = async ({
     onEvent: onNoteEvent,
   });
   await Promise.race(noteSubscriptions);
+  gotNotesEose = true;
 
-  // TODO - Deduplicate authors here
-  const authors = getEventsForSpecificAuthor
-    ? [publicKey]
-    : noteEvents.map((event) => getPublicKeyFromEvent({ event }));
+  const authorsWithDuplicates = noteEvents.map((event) =>
+    getPublicKeyFromEvent({ event })
+  );
+  const authors = uniq(authorsWithDuplicates);
   const profileFilter: Filter = {
     kinds: [Kind.Metadata],
     authors,
@@ -105,7 +103,9 @@ export const subscribe = async ({
 
   const profileEvents: NostrEvent[] = [];
   const onProfileEvent = (event: NostrEvent) => {
-    profileEvents.push(event);
+    const profile = getProfileFromEvent({ event });
+    const publicKey = getPublicKeyFromEvent({ event });
+    profiles[publicKey] = profile;
   };
 
   const profileSubscriptions = _subscribe({
@@ -116,10 +116,7 @@ export const subscribe = async ({
 
   // NOTE: At this point we should have fetched all the stored events, and all
   // the profiles of the authors of all of those events
-  const notes = eventsToNotes({ noteEvents, profileEvents });
+  const notes = noteEvents.map((event) => eventToNote({ event, profiles }));
 
   notes.forEach((note) => onNoteReceived(note));
-
-  // TODO - How can we make this into a subscription instead of a fetch?
-  // This will be crucial to ensure that newly posted notes get added to the map
 };
