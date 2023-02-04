@@ -15,6 +15,16 @@ export const getPrivateKey = async ({
   return privateKeyMaybe;
 };
 
+export const hasPrivateKey = async ({
+  localStorage = globalThis.localStorage,
+}: MaybeLocalStorage = {}) => {
+  try {
+    await getPrivateKey();
+    return true;
+  } catch {}
+  return false;
+};
+
 export const getPublicKey = async ({
   localStorage = globalThis.localStorage,
 }: MaybeLocalStorage = {}): Promise<string> => {
