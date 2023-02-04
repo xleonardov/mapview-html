@@ -1,48 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>NOSTR map</title>
+    <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
+    <link
+      rel="stylesheet"
+      href="../node_modules/leaflet.sidepanel/dist/leaflet-sidepanel.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="nostr/index.ts"></script>
+    <script type="module" src="map.ts"></script>
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>NOSTR map</title>
-  <link rel="stylesheet" href="../node_modules/leaflet/dist/leaflet.css" />
-  <link rel="stylesheet" href="../node_modules/leaflet.sidepanel/dist/leaflet-sidepanel.css" />
-  <link rel="stylesheet" href="style.css" />
-  <script type="module" src="nostr/index.ts"></script>
-  <script type="module" src="map.ts"></script>
-</head>
+  <body>
+    <div id="map">
+      <div
+        id="panelID"
+        class="sidepanel"
+        aria-label="side panel"
+        aria-hidden="false"
+      >
+        <div class="sidepanel-inner-wrapper">
+          <div class="sidepanel-content-wrapper">
+            <div class="sidepanel-content">
+              <h2>Sign up or sign in</h2>
+              <p>
+                To save notes to the map, please create an account or login.
+              </p>
 
-<body>
-  <div id="map">
-    <div id="panelID" class="sidepanel" aria-label="side panel" aria-hidden="false">
-      <div class="sidepanel-inner-wrapper">
-        <nav class="sidepanel-tabs-wrapper" aria-label="sidepanel tab navigation">
-          <ul class="sidepanel-tabs">
-            <li class="sidepanel-tab">
-              <a href="#" class="sidebar-tab-link" role="tab" data-tab-link="tab-1">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor">
-                  <path fill-rule="evenodd" />
-                </svg>
-              </a>
-            </li>
-            <!-- [...] -->
-          </ul>
-        </nav>
-        <div class="sidepanel-content-wrapper">
-          <div class="sidepanel-content">
-            <div class="sidepanel-tab-content" data-tab-content="tab-1">
-              <p>Content 1.</p>
+              <h3>Sign up</h3>
+              <form>
+                <p>Name: <input type="text" id="signup_name" /></p>
+                <p>About: <input type="text" id="signup_about" /></p>
+                <p><button>Create account</button></p>
+              </form>
+
+              <h3>Sign in</h3>
+              <form>
+                <p>Private key: <input type="text" id="signin_privatekey" /></p>
+                <p><button>Sign in</button></p>
+              </form>
             </div>
-            <!-- [...] -->
           </div>
         </div>
-      </div>
-      <div class="sidepanel-toggle-container">
-        <button class="sidepanel-toggle-button" type="button" aria-label="toggle side panel"></button>
+        <div class="sidepanel-toggle-container">
+          <button
+            class="sidepanel-toggle-button"
+            type="button"
+            aria-label="toggle side panel"
+          ></button>
+        </div>
       </div>
     </div>
-  </div>
-</body>
-
+  </body>
 </html>

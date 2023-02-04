@@ -17,7 +17,22 @@ L.tileLayer("https://grid.plus.codes/grid/tms/{z}/{x}/{y}.png", {
 
 // NOTE: The leaflet sidepanel plugin doesn't have types in `@types/leaflet` and
 // so we need to cast to any here.
-const panelRight = (L.control as any).sidepanel("panelID", {}).addTo(map);
+const PANEL_CONTAINER_ID = "panelID";
+(L.control as any).sidepanel(PANEL_CONTAINER_ID, { hasTabs: true }).addTo(map);
+
+// The leaflet sidepanel plugin doesn't export an API, so we've written our own
+const hackSidePanelOpen = () => {
+  const panel = L.DomUtil.get(PANEL_CONTAINER_ID);
+  L.DomUtil.removeClass(panel!, "closed");
+  L.DomUtil.addClass(panel!, "opened");
+};
+
+// The leaflet sidepanel plugin doesn't export an API, so we've written our own
+const hackSidePanelClosed = () => {
+  const panel = L.DomUtil.get(PANEL_CONTAINER_ID);
+  L.DomUtil.removeClass(panel!, "opened");
+  L.DomUtil.addClass(panel!, "closed");
+};
 
 map.on("contextmenu", (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
