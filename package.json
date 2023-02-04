@@ -13,7 +13,7 @@
     "prettier": "prettier --write src/",
     "deploy:build": "parcel build --public-url /nostr-map",
     "deploy:publish": "gh-pages -d dist",
-    "deploy": "yarn build && yarn gh-pages"
+    "deploy": "yarn deploy:build && yarn deploy:publish"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "2.8.3",
