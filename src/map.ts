@@ -10,6 +10,11 @@ import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
 
+// this lets us add multiple notes to a single area
+const plusCodesWithPopupsAndNotes: {
+  [key: string]: { popup: L.Popup; notes: [Note] };
+} = {};
+
 L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
   attribution:
     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -75,14 +80,33 @@ function generatePolygonFromPlusCode(plusCode: string) {
   return poly;
 }
 
+function generateContentFromNotes(notes: Note[]) {
+  let content = "";
+  for (let note of notes) {
+    content += `${note.content} – by ${note.authorName}<br>`;
+  }
+  return content;
+}
+
 function addNoteToMap(note: Note) {
-  const poly = generatePolygonFromPlusCode(note.plusCode);
-  poly.addTo(map);
+  let existing = plusCodesWithPopupsAndNotes[note.plusCode];
+  if (existing) {
+    const popup = existing.popup;
+    const notes = [...existing.notes, note];
+    popup.setContent(generateContentFromNotes(notes));
+  } else {
+    const poly = generatePolygonFromPlusCode(note.plusCode);
+    poly.addTo(map);
 
-  const content = `${note.content} – by ${note.authorName}`;
-
-  poly.bindPopup(content);
-  poly.on("click", () => poly.openPopup());
+    const content = generateContentFromNotes([note]);
+    const popup = L.popup().setContent(content);
+    poly.bindPopup(popup);
+    poly.on("click", () => poly.openPopup());
+    plusCodesWithPopupsAndNotes[note.plusCode] = {
+      popup,
+      notes: [note],
+    };
+  }
 }
 
 function createPopupHtml(createNoteCallback) {
