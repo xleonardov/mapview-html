@@ -1,4 +1,4 @@
-import { Kind, Filter } from "nostr-tools";
+import { Kind, Filter, nip19 } from "nostr-tools";
 import { MAP_NOTE_KIND, PLUS_CODE_TAG_KEY } from "../constants";
 import { NostrEvent, Note, Profile } from "../types";
 import { _subscribe } from "./relays";
@@ -26,11 +26,13 @@ const eventToNoteMinusProfile = ({
   }
 
   const publicKey = getPublicKeyFromEvent({ event });
+  const authorNpubPublicKey = nip19.npubEncode(publicKey);
 
   const { content } = event;
 
   return {
     authorPublicKey: publicKey,
+    authorNpubPublicKey,
     content,
     plusCode,
   };

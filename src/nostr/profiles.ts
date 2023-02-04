@@ -1,4 +1,4 @@
-import { Kind } from "nostr-tools";
+import { Kind, nip19 } from "nostr-tools";
 import { MaybeLocalStorage, Profile, UnsignedEvent } from "../types";
 import { getPrivateKey } from "./keys";
 import { _publish, _subscribe } from "./relays";
@@ -50,6 +50,7 @@ export const subscribeAndGetProfile = async ({
   publicKey,
 }: GetProfileParams) => {
   return new Promise<Profile>((resolve, reject) => {
+    const npubPublicKey = nip19.npubEncode(publicKey);
     const subscriptions = _subscribe({
       filters: [
         {
@@ -71,7 +72,7 @@ export const subscribeAndGetProfile = async ({
 
     // Timeout after 2s. This is a no-op if the promise already resolved above.
     setTimeout(() => {
-      resolve({ publicKey, name: "", about: "", picture: "" });
+      resolve({ publicKey, npubPublicKey, name: "", about: "", picture: "" });
     }, 2e3);
   });
 };
