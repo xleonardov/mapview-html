@@ -49,7 +49,7 @@ export const setPrivateKey = async ({
   localStorage.setItem(PRIVATE_KEY_STORAGE_KEY, privateKey);
 };
 
-export const createPrivateKey = async () => {
+export const _createPrivateKey = async () => {
   const privateKey = generatePrivateKey();
   await setPrivateKey({ privateKey });
   return privateKey;

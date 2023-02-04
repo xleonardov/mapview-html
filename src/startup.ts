@@ -1,6 +1,7 @@
 import * as L from "leaflet";
+import { createNostrAccount } from "./nostr";
 import {
-  createPrivateKey,
+  _createPrivateKey,
   getPublicKey,
   hasPrivateKey,
   setPrivateKey,
@@ -43,7 +44,7 @@ export const startup = async () => {
         document.getElementById("signup_about") as HTMLInputElement
       ).value;
 
-      createPrivateKey()
+      createNostrAccount()
         .then(() => {
           setProfile({ name, about }).then(() => {
             globalThis.alert("Your account was created.");
