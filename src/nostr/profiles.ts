@@ -50,7 +50,6 @@ export const subscribeAndGetProfile = async ({
   publicKey,
 }: GetProfileParams) => {
   return new Promise<Profile>((resolve, reject) => {
-    const npubPublicKey = nip19.npubEncode(publicKey);
     const subscriptions = _subscribe({
       filters: [
         {
@@ -72,6 +71,7 @@ export const subscribeAndGetProfile = async ({
 
     // Timeout after 2s. This is a no-op if the promise already resolved above.
     setTimeout(() => {
+      const npubPublicKey = nip19.npubEncode(publicKey);
       resolve({ publicKey, npubPublicKey, name: "", about: "", picture: "" });
     }, 2e3);
   });
