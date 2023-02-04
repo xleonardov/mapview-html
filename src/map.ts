@@ -83,7 +83,9 @@ function generatePolygonFromPlusCode(plusCode: string) {
 function generateContentFromNotes(notes: Note[]) {
   let content = "";
   for (let note of notes) {
-    content += `${note.content} – by <a href="/?author=${note.authorPublicKey}">${note.authorName}</a><br>`;
+    content += `${note.content} – by <a href="#${note.authorPublicKey}">${
+      note.authorName || note.authorPublicKey.substring(0, 5) + "..."
+    }</a><br>`;
   }
   return content;
 }
