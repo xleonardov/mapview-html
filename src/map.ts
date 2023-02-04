@@ -39,8 +39,14 @@ const hackSidePanelClosed = () => {
   L.DomUtil.addClass(panel!, "closed");
 };
 
-map.on("contextmenu", (event) => {
+map.on("contextmenu", async (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
+  const isLoggedIn = await hasPrivateKey();
+  if (!isLoggedIn) {
+    hackSidePanelOpen();
+    return;
+  }
+
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
 
@@ -49,22 +55,15 @@ map.on("contextmenu", (event) => {
   selectedPlusCodePoly.setStyle({ color: "grey" });
   selectedPlusCodePoly.addTo(map);
 
-  hasPrivateKey().then((isLoggedIn) => {
-    if (!isLoggedIn) {
-      hackSidePanelOpen();
-      return;
-    }
+  const createNoteCallback = async (content) => {
+    createNote({ content, plusCode });
+  };
 
-    const createNoteCallback = async (content) => {
-      createNote({ content, plusCode });
-    };
-
-    L.popup()
-      .setLatLng(event.latlng)
-      .setContent(createPopupHtml(createNoteCallback))
-      .openOn(map)
-      .on("remove", (e) => selectedPlusCodePoly.remove());
-  });
+  L.popup()
+    .setLatLng(event.latlng)
+    .setContent(createPopupHtml(createNoteCallback))
+    .openOn(map)
+    .on("remove", (e) => selectedPlusCodePoly.remove());
 });
 
 function generatePolygonFromPlusCode(plusCode: string) {
@@ -83,7 +82,7 @@ function generatePolygonFromPlusCode(plusCode: string) {
 function generateContentFromNotes(notes: Note[]) {
   let content = "";
   for (let note of notes) {
-    content += `${note.content} – by <a href="#${note.authorPublicKey}">${
+    content += `${note.content} – by <a href="#${note.authorNpubPublicKey}">${
       note.authorName || note.authorPublicKey.substring(0, 5) + "..."
     }</a><br>`;
   }
