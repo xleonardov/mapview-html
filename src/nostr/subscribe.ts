@@ -95,7 +95,7 @@ export const subscribe = async ({
     filters: [eventsFilterWithLimit],
     onEvent: onNoteEvent,
   });
-  await Promise.race(noteSubscriptions);
+  await Promise.race(await noteSubscriptions);
   gotNotesEose = true;
 
   const authorsWithDuplicates = noteEventsQueue.map((event) =>
@@ -118,7 +118,7 @@ export const subscribe = async ({
     filters: [profileFilter],
     onEvent: onProfileEvent,
   });
-  await Promise.race(profileSubscriptions);
+  await Promise.race(await profileSubscriptions);
   gotPromiseEose = true;
 
   // NOTE: At this point we should have fetched all the stored events, and all

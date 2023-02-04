@@ -4,6 +4,7 @@ import { MaybeLocalStorage, NostrEvent } from "../types";
 
 const relays: Relay[] = [];
 globalThis.relays = relays;
+let connectedPromise: Promise<void | void[]>;
 
 /**
  * Get the list of relays we're connecting to
@@ -62,6 +63,12 @@ export const setRelays = async ({
 export const _initRelays = async ({
   urls = [],
 }: { urls?: string[] } = {}): Promise<void> => {
+  if (typeof connectedPromise !== "undefined") {
+    // NOTE: We need to cast here because TypeScript doesn't know if this will
+    // be an array or a single void and so it complains. In reality, we don't
+    // care, we just want to await this promise and ignore it's output.
+    return connectedPromise as Promise<void>;
+  }
   // Ensure this is only invoked once
   if (relays.length > 0) {
     return;
@@ -81,7 +88,8 @@ export const _initRelays = async ({
     relays.push(relay);
   });
 
-  await Promise.all(connectionPromises);
+  connectedPromise = Promise.all(connectionPromises);
+  await connectedPromise;
 
   if (relays.length === 0) {
     console.error("#qDRSs5 All relays failed to connect");
@@ -106,10 +114,11 @@ type SubscribeParams = {
   filters: Filter[];
   onEvent: (event: NostrEvent) => void;
 };
-export const _subscribe = ({
+export const _subscribe = async ({
   filters,
   onEvent,
-}: SubscribeParams): Promise<Sub>[] => {
+}: SubscribeParams): Promise<Promise<Sub>[]> => {
+  await _initRelays();
   const subscriptions = relays.map(
     (relay) =>
       new Promise<Sub>((resolve, reject) => {
