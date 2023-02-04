@@ -32,9 +32,10 @@ map.on("contextmenu", (event) => {
     };
     addNoteToMap(note);
   };
-  L.popup(event.latlng, {
-    content: createPopupHtml(createNoteCallback),
-  }).openOn(map);
+  L.popup()
+    .setLatLng(event.latlng)
+    .setContent(createPopupHtml(createNoteCallback))
+    .openOn(map);
 });
 
 function addNoteToMap(note: Note) {
