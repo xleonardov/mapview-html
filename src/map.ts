@@ -1,11 +1,6 @@
 import L from "leaflet";
 import { encode, decode } from "pluscodes";
-
-type Note = {
-  olc: string;
-  content: string;
-  author: string;
-};
+import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
 
@@ -19,24 +14,28 @@ L.tileLayer("https://grid.plus.codes/grid/tms/{z}/{x}/{y}.png", {
   attribution: "grid by plus codes",
 }).addTo(map);
 
-map.on("contextmenu", (e) => {
-  console.log("right clickd");
-  const coords = { latitude: e.latlng.lat, longitude: e.latlng.lng };
-  const encoded = encode(coords, 6);
-  const cb = (content) => {
+map.on("contextmenu", (event) => {
+  console.log("#bG7CWu Right clicked or long pressed");
+  const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
+  const plusCode = encode(coords, 6);
+  const createNoteCallback = (content) => {
     // this is where we'd send back to Nostr the event
-    const note = {
-      author: "me",
-      olc: encoded!,
+    const note: Note = {
+      plusCode: plusCode!,
       content,
+      // TODO - How do we get author name and public key?
+      authorName: "me",
+      authorPublicKey: "",
     };
-    addNote(note);
+    addNoteToMap(note);
   };
-  const popup = L.popup(e.latlng, { content: createPopupHtml(cb) }).openOn(map);
+  L.popup(event.latlng, {
+    content: createPopupHtml(createNoteCallback),
+  }).openOn(map);
 });
 
-function addNote(note: Note) {
-  const decoded = decode(note.olc);
+function addNoteToMap(note: Note) {
+  const decoded = decode(note.plusCode);
   const { resolution: res, longitude: cLong, latitude: cLat } = decoded!;
   const latlngs = [
     L.latLng(cLat + res / 2, cLong + res / 2),
@@ -46,13 +45,13 @@ function addNote(note: Note) {
   ];
   const poly = L.polygon(latlngs).addTo(map);
 
-  const content = `${note.content} – by ${note.author}`;
+  const content = `${note.content} – by ${note.authorName}`;
 
   poly.bindPopup(content);
   poly.on("click", () => poly.openPopup());
 }
 
-function createPopupHtml(cb) {
+function createPopupHtml(createNoteCallback) {
   const popupContainer = document.createElement("div");
   popupContainer.className = "popup-container";
   const contentInput = document.createElement("input");
@@ -64,7 +63,7 @@ function createPopupHtml(cb) {
   submitButton.innerText = "Add Note!";
   submitButton.onclick = () => {
     const content = contentInput.value;
-    cb(content);
+    createNoteCallback(content);
     map.closePopup();
   };
   popupContainer.appendChild(contentInput);
@@ -73,27 +72,31 @@ function createPopupHtml(cb) {
 }
 
 // HELPER SETUP
-const notes = [
+const notes: Note[] = [
   {
-    olc: "9C3XGQ00+",
+    plusCode: "9C3XGQ00+",
     content: "fun places!",
-    author: "Callum",
+    authorName: "Callum",
+    authorPublicKey: "",
   },
   {
-    olc: "9C3XGR00+",
+    plusCode: "9C3XGR00+",
     content: "don't go here",
-    author: "Simon",
+    authorName: "Simon",
+    authorPublicKey: "",
   },
   {
-    olc: "9C3XGW00+",
+    plusCode: "9C3XGW00+",
     content: "good weed!",
-    author: "Rafa",
+    authorName: "Rafa",
+    authorPublicKey: "",
   },
   {
-    olc: "9C3XFX00+",
+    plusCode: "9C3XFX00+",
     content: "amazing music",
-    author: "Kata",
+    authorName: "Kata",
+    authorPublicKey: "",
   },
 ];
 
-notes.forEach(addNote);
+notes.forEach(addNoteToMap);
