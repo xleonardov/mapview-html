@@ -15,11 +15,6 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
     '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
 }).addTo(map);
 
-L.tileLayer("https://grid.plus.codes/grid/tms/{z}/{x}/{y}.png", {
-  tms: true,
-  attribution: "grid by plus codes",
-}).addTo(map);
-
 // NOTE: The leaflet sidepanel plugin doesn't have types in `@types/leaflet` and
 // so we need to cast to any here.
 const PANEL_CONTAINER_ID = "panelID";
@@ -44,6 +39,11 @@ map.on("contextmenu", (event) => {
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
 
+  const selectedPlusCodePoly = generatePolygonFromPlusCode(plusCode);
+
+  selectedPlusCodePoly.setStyle({ color: "red" });
+  selectedPlusCodePoly.addTo(map);
+
   hasPrivateKey().then((isLoggedIn) => {
     if (!isLoggedIn) {
       hackSidePanelOpen();
@@ -57,12 +57,13 @@ map.on("contextmenu", (event) => {
     L.popup()
       .setLatLng(event.latlng)
       .setContent(createPopupHtml(createNoteCallback))
-      .openOn(map);
+      .openOn(map)
+      .on("remove", (e) => selectedPlusCodePoly.remove());
   });
 });
 
-function addNoteToMap(note: Note) {
-  const decoded = decode(note.plusCode);
+function generatePolygonFromPlusCode(plusCode: string) {
+  const decoded = decode(plusCode);
   const { resolution: res, longitude: cLong, latitude: cLat } = decoded!;
   const latlngs = [
     L.latLng(cLat + res / 2, cLong + res / 2),
@@ -70,7 +71,13 @@ function addNoteToMap(note: Note) {
     L.latLng(cLat - res / 2, cLong - res / 2),
     L.latLng(cLat + res / 2, cLong - res / 2),
   ];
-  const poly = L.polygon(latlngs).addTo(map);
+  const poly = L.polygon(latlngs);
+  return poly;
+}
+
+function addNoteToMap(note: Note) {
+  const poly = generatePolygonFromPlusCode(note.plusCode);
+  poly.addTo(map);
 
   const content = `${note.content} – by ${note.authorName}`;
 
