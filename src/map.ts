@@ -15,7 +15,9 @@ L.tileLayer("https://grid.plus.codes/grid/tms/{z}/{x}/{y}.png", {
   attribution: "grid by plus codes",
 }).addTo(map);
 
-const panelRight = L.control.sidepanel("panelID", {}).addTo(map);
+// NOTE: The leaflet sidepanel plugin doesn't have types in `@types/leaflet` and
+// so we need to cast to any here.
+const panelRight = (L.control as any).sidepanel("panelID", {}).addTo(map);
 
 map.on("contextmenu", (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
