@@ -46,7 +46,7 @@ map.on("contextmenu", (event) => {
 
   const selectedPlusCodePoly = generatePolygonFromPlusCode(plusCode);
 
-  selectedPlusCodePoly.setStyle({ color: "red" });
+  selectedPlusCodePoly.setStyle({ color: "grey" });
   selectedPlusCodePoly.addTo(map);
 
   hasPrivateKey().then((isLoggedIn) => {
@@ -96,6 +96,7 @@ function addNoteToMap(note: Note) {
     popup.setContent(generateContentFromNotes(notes));
   } else {
     const poly = generatePolygonFromPlusCode(note.plusCode);
+    poly.setStyle({ color: "blue" });
     poly.addTo(map);
 
     const content = generateContentFromNotes([note]);
