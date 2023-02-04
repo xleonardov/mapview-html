@@ -1,5 +1,6 @@
 import * as L from "leaflet";
-import { getPublicKey, hasPrivateKey } from "./nostr/keys";
+import { createPrivateKey, getPublicKey, hasPrivateKey } from "./nostr/keys";
+import { setProfile } from "./nostr/profiles";
 
 export const startup = async () => {
   const isLoggedIn = await hasPrivateKey();
@@ -19,5 +20,21 @@ export const startup = async () => {
     L.DomUtil.addClass(loggedIn, "hide");
     L.DomUtil.addClass(loggedOut, "show");
   }
+
+  const signinSubmit = document.getElementById("signin_submit")!;
+  signinSubmit.onclick = (event) => {
+    event.preventDefault();
+    signinSubmit.setAttribute("disabled", true);
+    const name = (document.getElementById("signup_name") as HTMLInputElement)
+      .value;
+    const about = (document.getElementById("signup_about") as HTMLInputElement)
+      .value;
+    createPrivateKey().then(() => {
+      setProfile({ name, about }).then(() => {
+        globalThis.alert("Your account was created.");
+        globalThis.document.location.reload();
+      });
+    });
+  };
 };
 startup();
