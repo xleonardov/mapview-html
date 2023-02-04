@@ -1,7 +1,7 @@
 import * as L from "leaflet";
-import { createNostrAccount, getRelays, setRelays } from "./nostr";
+import { getRelays, setRelays } from "./nostr";
 import {
-  _createPrivateKey,
+  createPrivateKey,
   getPublicKey,
   hasPrivateKey,
   setPrivateKey,
@@ -9,9 +9,11 @@ import {
   getNsecPrivateKey,
 } from "./nostr/keys";
 import { getProfile, setProfile } from "./nostr/profiles";
+import { createRelays } from "./nostr/relays";
 import { getUrlFromNpubPublicKey } from "./router";
 
 export const startup = async () => {
+  await createRelays();
   const isLoggedIn = await hasPrivateKey();
 
   const loggedIn = L.DomUtil.get("loggedIn")!;
@@ -66,34 +68,6 @@ export const startup = async () => {
         profileSubmitButton.removeAttribute("disabled");
       }
     };
-
-    const relaysInput = document.getElementById("relays") as HTMLInputElement;
-    getRelays().then((relays) => {
-      const relaysJson = JSON.stringify(relays);
-      relaysInput.value = relaysJson;
-    });
-
-    const relaySubmitButton = document.getElementById("relays_submit")!;
-    relaySubmitButton.onclick = async (event) => {
-      event.preventDefault();
-      relaySubmitButton.setAttribute("disabled", "disabled");
-
-      const relaysJson = relaysInput.value;
-      try {
-        const relays = JSON.parse(relaysJson) as string[];
-        if (!Array.isArray(relays) || relays.length === 0) {
-          relaySubmitButton.removeAttribute("disabled");
-          globalThis.alert("Invalid relays submitted. Please try again.");
-          return;
-        }
-        await setRelays({ relays });
-        globalThis.alert("Relays saved.");
-        globalThis.document.location.reload();
-      } catch (error) {
-        relaySubmitButton.removeAttribute("disabled");
-        globalThis.alert(`#vRuf1N Error saving relays\n${error.toString()}`);
-      }
-    };
   } else {
     L.DomUtil.addClass(loggedIn, "hide");
     L.DomUtil.addClass(loggedOut, "show");
@@ -109,7 +83,7 @@ export const startup = async () => {
       ).value;
 
       try {
-        await createNostrAccount();
+        await createPrivateKey();
         setProfile({ name, about }).then(() => {
           globalThis.alert("Your account was created.");
           globalThis.document.location.reload();
@@ -136,5 +110,32 @@ export const startup = async () => {
       }
     };
   }
+
+  const relaysInput = document.getElementById("relays") as HTMLInputElement;
+  const relays = await getRelays();
+  const relaysJson = JSON.stringify(relays);
+  relaysInput.value = relaysJson;
+
+  const relaySubmitButton = document.getElementById("relays_submit")!;
+  relaySubmitButton.onclick = async (event) => {
+    event.preventDefault();
+    relaySubmitButton.setAttribute("disabled", "disabled");
+
+    const relaysJson = relaysInput.value;
+    try {
+      const relays = JSON.parse(relaysJson) as string[];
+      if (!Array.isArray(relays) || relays.length === 0) {
+        relaySubmitButton.removeAttribute("disabled");
+        globalThis.alert("Invalid relays submitted. Please try again.");
+        return;
+      }
+      await setRelays({ relays });
+      globalThis.alert("Relays saved.");
+      globalThis.document.location.reload();
+    } catch (error) {
+      relaySubmitButton.removeAttribute("disabled");
+      globalThis.alert(`#vRuf1N Error saving relays\n${error.toString()}`);
+    }
+  };
 };
 startup();

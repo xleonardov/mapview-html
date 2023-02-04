@@ -27,6 +27,13 @@ export const getRelays = async ({
   }
 };
 
+export const hasRelays = async ({
+  localStorage = globalThis.localStorage,
+}: MaybeLocalStorage = {}): Promise<boolean> => {
+  const relaysJson = localStorage.getItem(RELAYS_STORAGE_KEY);
+  return relaysJson === null;
+};
+
 type SetRelaysParams = {
   /** The relay URLs. NOTE: This overwrites ALL existing relays. */
   relays: string[];
@@ -98,6 +105,9 @@ export const _subscribe = ({
   return subscriptions;
 };
 
-export const _createRelays = async () => {
-  await setRelays({ relays: DEFAULT_RELAYS });
+export const createRelays = async () => {
+  const relaysInstalled = await hasRelays();
+  if (!relaysInstalled) {
+    await setRelays({ relays: DEFAULT_RELAYS });
+  }
 };
