@@ -6,6 +6,7 @@ import {
   hasPrivateKey,
   setPrivateKey,
   getNpubPublicKey,
+  getNsecPrivateKey,
 } from "./nostr/keys";
 import { getProfile, setProfile } from "./nostr/profiles";
 import { getUrlFromNpubPublicKey } from "./router";
@@ -22,9 +23,13 @@ export const startup = async () => {
 
     const publicKey = await getPublicKey();
     const npubPublicKey = await getNpubPublicKey();
+    const nsecPrivateKey = await getNsecPrivateKey();
 
-    const publicKeySpan = globalThis.document.getElementById("publicKey")!;
+    const publicKeySpan = globalThis.document.getElementById("npubPublicKey")!;
     publicKeySpan.innerText = npubPublicKey;
+    const nsecPrivateKeySpan =
+      globalThis.document.getElementById("nsecPrivateKey")!;
+    nsecPrivateKeySpan.innerText = nsecPrivateKey;
 
     const yourUrl = getUrlFromNpubPublicKey({ npubPublicKey });
     const yourUrlHref = globalThis.document.getElementById(

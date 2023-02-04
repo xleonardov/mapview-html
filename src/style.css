@@ -14,7 +14,8 @@ body,
 .show {
   display: block;
 }
-#publicKey,
+#npubPublicKey,
+#nsecPrivateKey,
 #yourUrl {
   word-break: break-all;
 }
