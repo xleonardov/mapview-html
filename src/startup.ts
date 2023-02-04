@@ -1,5 +1,5 @@
 import * as L from "leaflet";
-import { createNostrAccount } from "./nostr";
+import { createNostrAccount, getRelays, setRelays } from "./nostr";
 import {
   _createPrivateKey,
   getPublicKey,
@@ -30,6 +30,34 @@ export const startup = async () => {
     ) as HTMLLinkElement;
     yourUrlHref.href = yourUrl;
     yourUrlHref.innerText = yourUrl;
+
+    const relaysInput = document.getElementById("relays") as HTMLInputElement;
+    getRelays().then((relays) => {
+      const relaysJson = JSON.stringify(relays);
+      relaysInput.value = relaysJson;
+    });
+
+    const relaySubmitButton = document.getElementById("relays_submit")!;
+    relaySubmitButton.onclick = async (event) => {
+      event.preventDefault();
+      relaySubmitButton.setAttribute("disabled", "disabled");
+
+      const relaysJson = relaysInput.value;
+      try {
+        const relays = JSON.parse(relaysJson) as string[];
+        if (!Array.isArray(relays) || relays.length === 0) {
+          relaySubmitButton.removeAttribute("disabled");
+          globalThis.alert("Invalid relays submitted. Please try again.");
+          return;
+        }
+        await setRelays({ relays });
+        globalThis.alert("Relays saved.");
+        globalThis.document.location.reload();
+      } catch (error) {
+        relaySubmitButton.removeAttribute("disabled");
+        globalThis.alert(`#vRuf1N Error saving relays\n${error.toString()}`);
+      }
+    };
   } else {
     L.DomUtil.addClass(loggedIn, "hide");
     L.DomUtil.addClass(loggedOut, "show");
