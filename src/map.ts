@@ -1,11 +1,15 @@
 import L from "leaflet";
 import "leaflet.sidepanel";
 import { decode, encode } from "pluscodes";
-import { hasPrivateKey } from "./nostr/keys";
+import { getPublicKey, hasPrivateKey } from "./nostr/keys";
 import { createNote } from "./nostr/notes";
 import { _initRelays } from "./nostr/relays";
 import { subscribe } from "./nostr/subscribe";
-import { getPublicKeyFromUrl, getUrlFromNpubPublicKey } from "./router";
+import {
+  getPublicKeyFromUrl,
+  getUrlFromNpubPublicKey,
+  getUrlFromPublickey,
+} from "./router";
 import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
@@ -50,6 +54,12 @@ map.on("contextmenu", async (event) => {
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
 
+  const viewingCurrentPublicKey = getPublicKeyFromUrl();
+  const myPublicKey = await getPublicKey();
+  const viewingMyOwnMap =
+    typeof viewingCurrentPublicKey === "undefined" ||
+    viewingCurrentPublicKey === myPublicKey;
+
   const selectedPlusCodePoly = generatePolygonFromPlusCode(plusCode);
 
   selectedPlusCodePoly.setStyle({ color: "grey" });
@@ -59,9 +69,15 @@ map.on("contextmenu", async (event) => {
     createNote({ content, plusCode });
   };
 
+  const popupContent = viewingMyOwnMap
+    ? createPopupHtml(createNoteCallback)
+    : `View <a href="${getUrlFromPublickey({
+        publicKey: myPublicKey,
+      })}">your own map</a> to add notes.`;
+
   L.popup()
     .setLatLng(event.latlng)
-    .setContent(createPopupHtml(createNoteCallback))
+    .setContent(popupContent)
     .openOn(map)
     .on("remove", (e) => selectedPlusCodePoly.remove());
 });

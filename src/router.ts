@@ -29,3 +29,15 @@ export const getUrlFromNpubPublicKey = ({
   const yourUrl = origin + pathname + "#" + npubPublicKey;
   return yourUrl;
 };
+
+export const getUrlFromPublickey = ({
+  publicKey,
+  location = globalThis.document.location,
+}: {
+  publicKey: string;
+  location?: Location;
+}): string => {
+  const npubPublicKey = nip19.npubEncode(publicKey);
+  const yourUrl = getUrlFromNpubPublicKey({ npubPublicKey });
+  return yourUrl;
+};
