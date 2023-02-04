@@ -21,10 +21,10 @@ export const startup = async () => {
     L.DomUtil.addClass(loggedOut, "show");
   }
 
-  const signinSubmit = document.getElementById("signin_submit")!;
-  signinSubmit.onclick = (event) => {
+  const signupSubmit = document.getElementById("signup_submit")!;
+  signupSubmit.onclick = (event) => {
     event.preventDefault();
-    signinSubmit.setAttribute("disabled", true);
+    signupSubmit.setAttribute("disabled", "disabled");
     const name = (document.getElementById("signup_name") as HTMLInputElement)
       .value;
     const about = (document.getElementById("signup_about") as HTMLInputElement)
