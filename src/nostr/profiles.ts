@@ -80,6 +80,3 @@ export const getProfile = async ({ publicKey }: GetProfileParams) => {
     setTimeout(reject, 2e3);
   });
 };
-
-globalThis.setProfile = setProfile;
-globalThis.getProfile = getProfile;
