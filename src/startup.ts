@@ -2,18 +2,16 @@ import * as L from "leaflet";
 import { getRelays, setRelays } from "./nostr";
 import {
   createPrivateKey,
+  getNpubPublicKey,
+  getNsecPrivateKey,
   getPublicKey,
   hasPrivateKey,
   setPrivateKey,
-  getNpubPublicKey,
-  getNsecPrivateKey,
 } from "./nostr/keys";
 import { getProfile, setProfile } from "./nostr/profiles";
-import { createRelays } from "./nostr/relays";
 import { getUrlFromNpubPublicKey } from "./router";
 
 export const startup = async () => {
-  await createRelays();
   const isLoggedIn = await hasPrivateKey();
 
   const loggedIn = L.DomUtil.get("loggedIn")!;
