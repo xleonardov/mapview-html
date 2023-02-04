@@ -11,10 +11,12 @@ export type Note = {
   content: string;
   authorName: string;
   authorPublicKey: string;
+  authorNpubPublicKey: string;
 };
 
 export type Profile = {
   publicKey: string;
+  npubPublicKey: string;
   name: string;
   about: string;
   picture: string;

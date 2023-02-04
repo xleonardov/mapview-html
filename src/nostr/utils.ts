@@ -2,6 +2,7 @@ import {
   getEventHash,
   getPublicKey as getPublicKeyFromPrivateKey,
   Kind,
+  nip19,
   nip26,
   signEvent,
 } from "nostr-tools";
@@ -29,9 +30,13 @@ export const getProfileFromEvent = ({
 
   const profileJson = event.content;
   const publicKey = getPublicKeyFromEvent({ event });
+  const npubPublicKey = nip19.npubEncode(publicKey);
   try {
-    const profile = JSON.parse(profileJson);
-    return { ...profile, publicKey };
+    const profile = JSON.parse(profileJson) as Omit<
+      Profile,
+      "publicKey" | "npubPublicKey"
+    >;
+    return { ...profile, publicKey, npubPublicKey };
   } catch (e) {
     const message = "#j2o1vH Failed to get profile from event";
     console.error(message, e);
