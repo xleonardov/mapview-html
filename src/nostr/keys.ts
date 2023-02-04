@@ -49,8 +49,8 @@ export const setPrivateKey = async ({
   localStorage.setItem(PRIVATE_KEY_STORAGE_KEY, privateKey);
 };
 
-globalThis.getPublicKey = getPublicKey;
-globalThis.createPrivateKey = () => {
+export const createPrivateKey = async () => {
   const privateKey = generatePrivateKey();
-  setPrivateKey({ privateKey });
+  await setPrivateKey({ privateKey });
+  return privateKey;
 };
