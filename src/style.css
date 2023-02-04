@@ -19,3 +19,6 @@ body,
 #yourUrl {
   word-break: break-all;
 }
+#relays {
+  width: 100%;
+}

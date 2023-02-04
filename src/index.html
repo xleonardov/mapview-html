@@ -72,39 +72,39 @@
                 </details>
 
                 <h2>Your profile</h2>
-                <form>
-                  <p>Name: <input type="text" id="profile_name" /></p>
-                  <p>About: <input type="text" id="profile_about" /></p>
-                  <p><button id="profile_submit">Update profile</button></p>
-                </form>
-
-                <!--
-                <h3>Update your profile</h3>
-                <form>
-                  <p>Name: <input type="text" id="signup_name" /></p>
-                  <p>About: <input type="text" id="signup_about" /></p>
-                  <p><button>Save profile</button></p>
-                </form>
-                -->
+                <details>
+                  <summary>Edit your profile here:</summary>
+                  <form>
+                    <p>Name: <input type="text" id="profile_name" /></p>
+                    <p>About: <input type="text" id="profile_about" /></p>
+                    <p><button id="profile_submit">Update profile</button></p>
+                  </form>
+                </details>
               </div>
 
               <h2>Help</h2>
 
-              <h3>How does this work?</h3>
-              <p>
-                Scroll around on the map. Long press (or right click) to add a
-                note to the map.
-              </p>
+              <details>
+                <summary>Some frequently asked questions here:</summary>
+                <h3>How does this work?</h3>
+                <p>
+                  Scroll around on the map. Long press (or right click) to add a
+                  note to the map.
+                </p>
+              </details>
 
-              <h2>Your relays</h2>
-              <p>
-                If you want to override the default relays, paste a JSON array
-                of relays here.
-              </p>
-              <form>
-                <p><input id="relays" type="text" /></p>
-                <p><button id="relays_submit">Update relays</button></p>
-              </form>
+              <h2>Relays</h2>
+              <details>
+                <summary>Manage relay settings:</summary>
+                <p>
+                  If you want to override the default relays, paste a JSON array
+                  of relays here.
+                </p>
+                <form>
+                  <p><input id="relays" type="text" /></p>
+                  <p><button id="relays_submit">Update relays</button></p>
+                </form>
+              </details>
             </div>
           </div>
         </div>
