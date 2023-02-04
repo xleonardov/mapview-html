@@ -9,11 +9,12 @@ body,
   width: 100vw;
 }
 .hide {
-  display: none
+  display: none;
 }
 .show {
   display: block;
 }
-#publicKey, #yourUrl {
+#publicKey,
+#yourUrl {
   word-break: break-all;
 }
