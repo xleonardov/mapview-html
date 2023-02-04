@@ -21,6 +21,14 @@ export const startup = async () => {
 
     const publicKeySpan = globalThis.document.getElementById("publicKey")!;
     publicKeySpan.innerText = publicKey;
+
+    const { origin, pathname } = globalThis.document.location;
+    const yourUrl = origin + pathname + "#" + publicKey;
+    const yourUrlHref = globalThis.document.getElementById(
+      "yourUrl"
+    ) as HTMLLinkElement;
+    yourUrlHref.href = yourUrl;
+    yourUrlHref.innerText = yourUrl;
   } else {
     L.DomUtil.addClass(loggedIn, "hide");
     L.DomUtil.addClass(loggedOut, "show");
