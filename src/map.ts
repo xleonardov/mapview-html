@@ -41,6 +41,12 @@ const hackSidePanelClosed = () => {
 
 map.on("contextmenu", async (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
+  const isLoggedIn = await hasPrivateKey();
+  if (!isLoggedIn) {
+    hackSidePanelOpen();
+    return;
+  }
+
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
 
@@ -48,12 +54,6 @@ map.on("contextmenu", async (event) => {
 
   selectedPlusCodePoly.setStyle({ color: "grey" });
   selectedPlusCodePoly.addTo(map);
-
-  const isLoggedIn = await hasPrivateKey();
-  if (!isLoggedIn) {
-    hackSidePanelOpen();
-    return;
-  }
 
   const createNoteCallback = async (content) => {
     createNote({ content, plusCode });
