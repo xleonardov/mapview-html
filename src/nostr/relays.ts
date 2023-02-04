@@ -66,10 +66,15 @@ export const _initRelays = async ({
   await _connectRelays();
 };
 
-export const _publish = async (event: Event): Promise<void> => {
-  relays.forEach((relay) => {
-    relay.publish(event);
+export const _publish = (event: Event): Promise<void>[] => {
+  const publishPromises = relays.map((relay) => {
+    return new Promise<void>((resolve, reject) => {
+      const pub = relay.publish(event);
+      pub.on("ok", () => resolve());
+      pub.on("failed", (reason) => reject(reason));
+    });
   });
+  return publishPromises;
 };
 
 type SubscribeParams = {
