@@ -5,7 +5,7 @@ import { hasPrivateKey } from "./nostr/keys";
 import { createNote } from "./nostr/notes";
 import { _initRelays } from "./nostr/relays";
 import { subscribe } from "./nostr/subscribe";
-import { getPublicKeyFromUrl } from "./router";
+import { getPublicKeyFromUrl, getUrlFromNpubPublicKey } from "./router";
 import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
@@ -79,10 +79,18 @@ function generatePolygonFromPlusCode(plusCode: string) {
   return poly;
 }
 
+// TODO - Can we restart our code instead of reloading the whole window?
+globalThis.addEventListener("popstate", (event) => {
+  globalThis.document.location.reload();
+});
+
 function generateContentFromNotes(notes: Note[]) {
   let content = "";
-  for (let note of notes) {
-    content += `${note.content} – by <a href="#${note.authorNpubPublicKey}">${
+  for (const note of notes) {
+    const url = getUrlFromNpubPublicKey({
+      npubPublicKey: note.authorNpubPublicKey,
+    });
+    content += `${note.content} – by <a href="${url}">${
       note.authorName || note.authorPublicKey.substring(0, 5) + "..."
     }</a><br>`;
   }
