@@ -25,11 +25,11 @@ export const startup = async () => {
     const npubPublicKey = await getNpubPublicKey();
     const nsecPrivateKey = await getNsecPrivateKey();
 
-    const publicKeySpan = globalThis.document.getElementById("npubPublicKey")!;
-    publicKeySpan.innerText = npubPublicKey;
-    const nsecPrivateKeySpan =
+    const publicKeyCode = globalThis.document.getElementById("npubPublicKey")!;
+    publicKeyCode.innerText = npubPublicKey;
+    const nsecPrivateKeyCode =
       globalThis.document.getElementById("nsecPrivateKey")!;
-    nsecPrivateKeySpan.innerText = nsecPrivateKey;
+    nsecPrivateKeyCode.innerText = nsecPrivateKey;
 
     const yourUrl = getUrlFromNpubPublicKey({ npubPublicKey });
     const yourUrlHref = globalThis.document.getElementById(
