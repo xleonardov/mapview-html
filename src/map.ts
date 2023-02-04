@@ -5,6 +5,7 @@ import { hasPrivateKey } from "./nostr/keys";
 import { createNote } from "./nostr/notes";
 import { _initRelays } from "./nostr/relays";
 import { subscribe } from "./nostr/subscribe";
+import { getPublicKeyFromUrl } from "./router";
 import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
@@ -96,15 +97,6 @@ function createPopupHtml(createNoteCallback) {
   popupContainer.appendChild(submitButton);
   return popupContainer;
 }
-
-const getPublicKeyFromUrl = () => {
-  const hash = document.location.hash;
-  if (hash.length !== 65) {
-    return;
-  }
-  // NOTE: The hash will include the leading # so we trim off the first character
-  return hash.slice(1);
-};
 
 const mapStartup = async () => {
   const publicKey = getPublicKeyFromUrl();

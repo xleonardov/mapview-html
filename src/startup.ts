@@ -5,8 +5,10 @@ import {
   getPublicKey,
   hasPrivateKey,
   setPrivateKey,
+  getNpubPublicKey,
 } from "./nostr/keys";
 import { getProfile, setProfile } from "./nostr/profiles";
+import { getUrlFromNpubPublicKey } from "./router";
 
 export const startup = async () => {
   const isLoggedIn = await hasPrivateKey();
@@ -19,12 +21,12 @@ export const startup = async () => {
     L.DomUtil.addClass(loggedOut, "hide");
 
     const publicKey = await getPublicKey();
+    const npubPublicKey = await getNpubPublicKey();
 
     const publicKeySpan = globalThis.document.getElementById("publicKey")!;
-    publicKeySpan.innerText = publicKey;
+    publicKeySpan.innerText = npubPublicKey;
 
-    const { origin, pathname } = globalThis.document.location;
-    const yourUrl = origin + pathname + "#" + publicKey;
+    const yourUrl = getUrlFromNpubPublicKey({ npubPublicKey });
     const yourUrlHref = globalThis.document.getElementById(
       "yourUrl"
     ) as HTMLLinkElement;

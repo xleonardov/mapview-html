@@ -1,11 +1,10 @@
 import {
   generatePrivateKey,
   getPublicKey as getPublicKeyFromPrivateKey,
+  nip19,
 } from "nostr-tools";
 import { PRIVATE_KEY_STORAGE_KEY } from "../constants";
 import { MaybeLocalStorage } from "../types";
-
-// TODO Add nip19 support
 
 export const getPrivateKey = async ({
   localStorage = globalThis.localStorage,
@@ -15,6 +14,14 @@ export const getPrivateKey = async ({
     throw new Error("#lvYBhM Cannot find private key");
   }
   return privateKeyMaybe;
+};
+
+export const getNsecPrivateKey = async ({
+  localStorage = globalThis.localStorage,
+}: MaybeLocalStorage = {}): Promise<string> => {
+  const privateKey = await getPrivateKey();
+  const nsecPrivateKey = nip19.nsecEncode(privateKey);
+  return nsecPrivateKey;
 };
 
 export const hasPrivateKey = async ({
@@ -35,6 +42,14 @@ export const getPublicKey = async ({
   const publicKey = getPublicKeyFromPrivateKey(privateKey);
 
   return publicKey;
+};
+
+export const getNpubPublicKey = async ({
+  localStorage = globalThis.localStorage,
+}: MaybeLocalStorage = {}): Promise<string> => {
+  const publicKey = await getPublicKey();
+  const npubPublicKey = nip19.npubEncode(publicKey);
+  return npubPublicKey;
 };
 
 type SetPrivateKeyParams = {
