@@ -5,6 +5,8 @@ import {
 import { PRIVATE_KEY_STORAGE_KEY } from "../constants";
 import { MaybeLocalStorage } from "../types";
 
+// TODO Add nip19 support
+
 export const getPrivateKey = async ({
   localStorage = globalThis.localStorage,
 }: MaybeLocalStorage = {}) => {
