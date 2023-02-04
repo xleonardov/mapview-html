@@ -14,9 +14,10 @@ const eventToNoteMinusProfile = ({
 }: {
   event: NostrEvent;
 }): Omit<Note, "authorName"> => {
+  const { id, kind, content } = event;
   // NOTE: We need to cast `note.kind` here because the `NostrEvent` type has a
   // enum for Kinds, which doesn't include our custom kind.
-  if ((event.kind as number) !== MAP_NOTE_KIND) {
+  if ((kind as number) !== MAP_NOTE_KIND) {
     throw new Error("#w27ijD Cannot convert event of wrong kind to note");
   }
 
@@ -28,9 +29,8 @@ const eventToNoteMinusProfile = ({
   const publicKey = getPublicKeyFromEvent({ event });
   const authorNpubPublicKey = nip19.npubEncode(publicKey);
 
-  const { content } = event;
-
   return {
+    id,
     authorPublicKey: publicKey,
     authorNpubPublicKey,
     content,

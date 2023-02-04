@@ -99,8 +99,17 @@ function generateContentFromNotes(notes: Note[]) {
 
 function addNoteToMap(note: Note) {
   let existing = plusCodesWithPopupsAndNotes[note.plusCode];
+
   if (existing) {
     const popup = existing.popup;
+
+    // When using multiple NOSTR relays, deduplicate the notes by ID to ensure
+    // that we don't show the same note multiple times.
+    const noteAlreadyOnTheMap = existing.notes.find((n) => n.id === note.id);
+    if (typeof noteAlreadyOnTheMap !== "undefined") {
+      return;
+    }
+
     const notes = [...existing.notes, note];
     popup.setContent(generateContentFromNotes(notes));
   } else {
