@@ -1,18 +1,8 @@
-import {
-  Event,
-  getEventHash,
-  getPublicKey as getPublicKeyFromPrivateKey,
-  Kind,
-  signEvent,
-} from "nostr-tools";
+import { Kind } from "nostr-tools";
 import { MaybeLocalStorage, Profile, UnsignedEvent } from "../types";
 import { getPrivateKey } from "./keys";
 import { _publish, _subscribe } from "./relays";
-import {
-  dateToUnix,
-  getProfileFromEvent,
-  signEventWithPrivateKey,
-} from "./utils";
+import { getProfileFromEvent, signEventWithPrivateKey } from "./utils";
 
 type SetProfileParams = {
   /** The user's name to be sent to all relays */
@@ -56,7 +46,9 @@ type GetProfileParams = {
   /** The public key of the user to fetch their profile */
   publicKey: string;
 };
-export const getProfile = async ({ publicKey }: GetProfileParams) => {
+export const subscribeAndGetProfile = async ({
+  publicKey,
+}: GetProfileParams) => {
   return new Promise<Profile>((resolve, reject) => {
     const subscriptions = _subscribe({
       filters: [
@@ -76,7 +68,10 @@ export const getProfile = async ({ publicKey }: GetProfileParams) => {
         }
       },
     });
+
     // Timeout after 2s. This is a no-op if the promise already resolved above.
-    setTimeout(reject, 2e3);
+    setTimeout(() => {
+      resolve({ publicKey, name: "", about: "", picture: "" });
+    }, 2e3);
   });
 };

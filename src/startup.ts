@@ -8,7 +8,7 @@ import {
   hasPrivateKey,
   setPrivateKey,
 } from "./nostr/keys";
-import { getProfile, setProfile } from "./nostr/profiles";
+import { subscribeAndGetProfile, setProfile } from "./nostr/profiles";
 import { getUrlFromNpubPublicKey } from "./router";
 
 export const startup = async () => {
@@ -44,7 +44,7 @@ export const startup = async () => {
     const profileAboutInput = document.getElementById(
       "profile_about"
     ) as HTMLInputElement;
-    const profile = await getProfile({ publicKey });
+    const profile = await subscribeAndGetProfile({ publicKey });
     profileNameInput.value = profile.name;
     profileAboutInput.value = profile.about;
 
