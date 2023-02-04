@@ -31,7 +31,19 @@ export const hasRelays = async ({
   localStorage = globalThis.localStorage,
 }: MaybeLocalStorage = {}): Promise<boolean> => {
   const relaysJson = localStorage.getItem(RELAYS_STORAGE_KEY);
-  return relaysJson === null;
+  if (relaysJson === null) {
+    return false;
+  }
+  try {
+    const relays = JSON.parse(relaysJson);
+    if (Array.isArray(relays)) {
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+  return true;
 };
 
 type SetRelaysParams = {
