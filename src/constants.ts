@@ -5,6 +5,5 @@ export const MAP_NOTE_KIND = 397 as const;
 export const DEFAULT_RELAYS = [
   "wss://nostr.massmux.com",
   "wss://public.nostr.swissrouting.com",
-  "wss://relay.stoner.com",
   "wss://nostr.slothy.win",
 ];
