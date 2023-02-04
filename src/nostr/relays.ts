@@ -70,7 +70,7 @@ export const _initRelays = async ({
   // Use the result from `getRelays()` if `urls` is not provided
   const realUrls = urls.length === 0 ? await getRelays() : urls;
 
-  realUrls.forEach(async (url) => {
+  const connectionPromises = realUrls.map(async (url) => {
     const relay = relayInit(url);
     try {
       await relay.connect();
@@ -80,6 +80,15 @@ export const _initRelays = async ({
     }
     relays.push(relay);
   });
+
+  await Promise.all(connectionPromises);
+
+  if (relays.length === 0) {
+    console.error("#qDRSs5 All relays failed to connect");
+    globalThis.alert(
+      "Error: All relays failed to connect. Please wait a minute and reload."
+    );
+  }
 };
 
 export const _publish = (event: Event): Promise<void>[] => {
