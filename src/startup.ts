@@ -1,5 +1,10 @@
 import * as L from "leaflet";
-import { createPrivateKey, getPublicKey, hasPrivateKey } from "./nostr/keys";
+import {
+  createPrivateKey,
+  getPublicKey,
+  hasPrivateKey,
+  setPrivateKey,
+} from "./nostr/keys";
 import { setProfile } from "./nostr/profiles";
 
 export const startup = async () => {
@@ -29,12 +34,35 @@ export const startup = async () => {
       .value;
     const about = (document.getElementById("signup_about") as HTMLInputElement)
       .value;
-    createPrivateKey().then(() => {
-      setProfile({ name, about }).then(() => {
-        globalThis.alert("Your account was created.");
-        globalThis.document.location.reload();
+
+    createPrivateKey()
+      .then(() => {
+        setProfile({ name, about }).then(() => {
+          globalThis.alert("Your account was created.");
+          globalThis.document.location.reload();
+        });
+      })
+      .catch(() => {
+        signinSubmit.removeAttribute("disabled");
       });
-    });
+  };
+
+  const signinSubmit = document.getElementById("signin_submit")!;
+  signinSubmit.onclick = (event) => {
+    event.preventDefault();
+    signupSubmit.setAttribute("disabled", "disabled");
+    const privateKey = (
+      document.getElementById("signin_privateKey") as HTMLInputElement
+    ).value;
+
+    setPrivateKey({ privateKey })
+      .then(() => {
+        globalThis.alert("You were signed in successfully.");
+        globalThis.document.location.reload();
+      })
+      .catch(() => {
+        signinSubmit.removeAttribute("disabled");
+      });
   };
 };
 startup();
