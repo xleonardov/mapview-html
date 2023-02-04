@@ -1,6 +1,7 @@
-import L from "leaflet";
 import { encode, decode } from "pluscodes";
 import { Note } from "./types";
+import L from "leaflet";
+import "leaflet.sidepanel";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
 
@@ -13,6 +14,8 @@ L.tileLayer("https://grid.plus.codes/grid/tms/{z}/{x}/{y}.png", {
   tms: true,
   attribution: "grid by plus codes",
 }).addTo(map);
+
+const panelRight = L.control.sidepanel("panelID", {}).addTo(map);
 
 map.on("contextmenu", (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
