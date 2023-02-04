@@ -42,16 +42,13 @@ export const setProfile = async ({
     unsignedEvent,
     privateKey: key,
   });
-  // TODO - We should probably await here so that this only resolves after successfully publishing the event
   try {
     const publishPromises = _publish(signedEvent);
     await Promise.all(publishPromises);
   } catch (error) {
     const message = "#mkox3R Error saving profile";
     console.error(message, error);
-    globalThis.alert(
-      "There was an error saving your profile. Please try again. #sbX20d"
-    );
+    throw error;
   }
 };
 
