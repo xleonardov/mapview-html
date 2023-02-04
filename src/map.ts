@@ -1,7 +1,10 @@
-import { encode, decode } from "pluscodes";
-import { Note } from "./types";
 import L from "leaflet";
 import "leaflet.sidepanel";
+import { decode, encode } from "pluscodes";
+import { createNote } from "./nostr/notes";
+import { _initRelays } from "./nostr/relays";
+import { subscribe } from "./nostr/subscribe";
+import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
 
@@ -37,17 +40,10 @@ const hackSidePanelClosed = () => {
 map.on("contextmenu", (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
-  const plusCode = encode(coords, 6);
+  const plusCode = encode(coords, 6)!;
   const createNoteCallback = (content) => {
     // this is where we'd send back to Nostr the event
-    const note: Note = {
-      plusCode: plusCode!,
-      content,
-      // TODO - How do we get author name and public key?
-      authorName: "me",
-      authorPublicKey: "",
-    };
-    addNoteToMap(note);
+    createNote({ content, plusCode });
   };
   L.popup()
     .setLatLng(event.latlng)
@@ -92,32 +88,18 @@ function createPopupHtml(createNoteCallback) {
   return popupContainer;
 }
 
-// HELPER SETUP
-const notes: Note[] = [
-  {
-    plusCode: "9C3XGQ00+",
-    content: "fun places!",
-    authorName: "Callum",
-    authorPublicKey: "",
-  },
-  {
-    plusCode: "9C3XGR00+",
-    content: "don't go here",
-    authorName: "Simon",
-    authorPublicKey: "",
-  },
-  {
-    plusCode: "9C3XGW00+",
-    content: "good weed!",
-    authorName: "Rafa",
-    authorPublicKey: "",
-  },
-  {
-    plusCode: "9C3XFX00+",
-    content: "amazing music",
-    authorName: "Kata",
-    authorPublicKey: "",
-  },
-];
+const getPublicKeyFromUrl = () => {
+  const hash = document.location.hash;
+  if (hash.length !== 65) {
+    return;
+  }
+  // NOTE: The hash will include the leading # so we trim off the first character
+  return hash.slice(1);
+};
 
-notes.forEach(addNoteToMap);
+const mapStartup = async () => {
+  const publicKey = getPublicKeyFromUrl();
+  await _initRelays();
+  subscribe({ publicKey, onNoteReceived: addNoteToMap });
+};
+mapStartup();

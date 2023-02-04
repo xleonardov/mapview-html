@@ -63,14 +63,17 @@ export const subscribe = async ({
   onNoteReceived,
   limit = 200,
 }: SubscribeParams) => {
+  console.log("#qnvvsm nostr/subscribe", publicKey);
   let gotNotesEose = false;
   const profiles: { [publicKey: string]: Profile } = {};
 
   const getEventsForSpecificAuthor = typeof publicKey !== "undefined";
 
+  const eventsBaseFilter = { kinds: [MAP_NOTE_KIND] };
+
   const eventsFilter: Filter = getEventsForSpecificAuthor
-    ? { authors: [publicKey] }
-    : { kinds: [MAP_NOTE_KIND] };
+    ? { ...eventsBaseFilter, authors: [publicKey] }
+    : eventsBaseFilter;
   const eventsFilterWithLimit = { ...eventsFilter, limit };
 
   const noteEvents: NostrEvent[] = [];
