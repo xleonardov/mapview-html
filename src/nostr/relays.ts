@@ -59,12 +59,6 @@ export const setRelays = async ({
   return;
 };
 
-export const _connectRelays = async () => {
-  const connectionPromises = relays.map((relay) => relay.connect());
-  await Promise.all(connectionPromises);
-  return;
-};
-
 export const _initRelays = async ({
   urls = [],
 }: { urls?: string[] } = {}): Promise<void> => {
@@ -76,12 +70,16 @@ export const _initRelays = async ({
   // Use the result from `getRelays()` if `urls` is not provided
   const realUrls = urls.length === 0 ? await getRelays() : urls;
 
-  realUrls.forEach((url) => {
+  realUrls.forEach(async (url) => {
     const relay = relayInit(url);
+    try {
+      await relay.connect();
+    } catch (error) {
+      console.error("#b9aLfB Connecting to relay failed", relay.url, error);
+      return;
+    }
     relays.push(relay);
   });
-
-  await _connectRelays();
 };
 
 export const _publish = (event: Event): Promise<void>[] => {
