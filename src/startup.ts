@@ -24,45 +24,46 @@ export const startup = async () => {
   } else {
     L.DomUtil.addClass(loggedIn, "hide");
     L.DomUtil.addClass(loggedOut, "show");
-  }
 
-  const signupSubmit = document.getElementById("signup_submit")!;
-  signupSubmit.onclick = (event) => {
-    event.preventDefault();
-    signupSubmit.setAttribute("disabled", "disabled");
-    const name = (document.getElementById("signup_name") as HTMLInputElement)
-      .value;
-    const about = (document.getElementById("signup_about") as HTMLInputElement)
-      .value;
+    const signupSubmit = document.getElementById("signup_submit")!;
+    signupSubmit.onclick = (event) => {
+      event.preventDefault();
+      signupSubmit.setAttribute("disabled", "disabled");
+      const name = (document.getElementById("signup_name") as HTMLInputElement)
+        .value;
+      const about = (
+        document.getElementById("signup_about") as HTMLInputElement
+      ).value;
 
-    createPrivateKey()
-      .then(() => {
-        setProfile({ name, about }).then(() => {
-          globalThis.alert("Your account was created.");
-          globalThis.document.location.reload();
+      createPrivateKey()
+        .then(() => {
+          setProfile({ name, about }).then(() => {
+            globalThis.alert("Your account was created.");
+            globalThis.document.location.reload();
+          });
+        })
+        .catch(() => {
+          signinSubmit.removeAttribute("disabled");
         });
-      })
-      .catch(() => {
-        signinSubmit.removeAttribute("disabled");
-      });
-  };
+    };
 
-  const signinSubmit = document.getElementById("signin_submit")!;
-  signinSubmit.onclick = (event) => {
-    event.preventDefault();
-    signupSubmit.setAttribute("disabled", "disabled");
-    const privateKey = (
-      document.getElementById("signin_privateKey") as HTMLInputElement
-    ).value;
+    const signinSubmit = document.getElementById("signin_submit")!;
+    signinSubmit.onclick = (event) => {
+      event.preventDefault();
+      signupSubmit.setAttribute("disabled", "disabled");
+      const privateKey = (
+        document.getElementById("signin_privateKey") as HTMLInputElement
+      ).value;
 
-    setPrivateKey({ privateKey })
-      .then(() => {
-        globalThis.alert("You were signed in successfully.");
-        globalThis.document.location.reload();
-      })
-      .catch(() => {
-        signinSubmit.removeAttribute("disabled");
-      });
-  };
+      setPrivateKey({ privateKey })
+        .then(() => {
+          globalThis.alert("You were signed in successfully.");
+          globalThis.document.location.reload();
+        })
+        .catch(() => {
+          signinSubmit.removeAttribute("disabled");
+        });
+    };
+  }
 };
 startup();
