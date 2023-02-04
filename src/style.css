@@ -8,3 +8,12 @@ body,
   height: 100vh;
   width: 100vw;
 }
+.hide {
+  display: none
+}
+.show {
+  display: block;
+}
+#publicKey {
+  word-break: break-all;
+}

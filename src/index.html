@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="style.css" />
     <script type="module" src="nostr/index.ts"></script>
     <script type="module" src="map.ts"></script>
+    <script type="module" src="startup.ts"></script>
   </head>
 
   <body>
@@ -29,7 +30,7 @@
         <div class="sidepanel-inner-wrapper">
           <div class="sidepanel-content-wrapper">
             <div class="sidepanel-content">
-              <div id="loggedout">
+              <div id="loggedOut">
                 <h2>Sign up or sign in</h2>
                 <p>
                   To save notes to the map, please create an account or login.
@@ -51,8 +52,11 @@
                 </form>
               </div>
 
-              <div id="loggedin">
-                <h2>Your public key: <span id="publicKey" /></h2>
+              <div id="loggedIn">
+                <h2>Your public key</h2>
+                <p>
+                  <code id="publicKey" />
+                </p>
 
                 <p>You can share your URL so others can see your map.</p>
 
