@@ -39,6 +39,7 @@ const hackSidePanelClosed = () => {
 
 map.on("contextmenu", (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
+  // TODO - Check for signup here
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
   const createNoteCallback = (content) => {
