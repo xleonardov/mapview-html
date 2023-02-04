@@ -89,7 +89,7 @@ export const _publish = (event: Event): Promise<void>[] => {
     return new Promise<void>((resolve, reject) => {
       const pub = relay.publish(event);
       pub.on("ok", () => resolve());
-      pub.on("failed", (reason) => reject(reason));
+      pub.on("failed", (reason) => reject(`${relay.url} - ${reason}`));
     });
   });
   return publishPromises;
