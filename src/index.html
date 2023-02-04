@@ -29,23 +29,42 @@
         <div class="sidepanel-inner-wrapper">
           <div class="sidepanel-content-wrapper">
             <div class="sidepanel-content">
-              <h2>Sign up or sign in</h2>
-              <p>
-                To save notes to the map, please create an account or login.
-              </p>
+              <div id="loggedout">
+                <h2>Sign up or sign in</h2>
+                <p>
+                  To save notes to the map, please create an account or login.
+                </p>
 
-              <h3>Sign up</h3>
-              <form>
-                <p>Name: <input type="text" id="signup_name" /></p>
-                <p>About: <input type="text" id="signup_about" /></p>
-                <p><button>Create account</button></p>
-              </form>
+                <h3>Sign up</h3>
+                <form>
+                  <p>Name: <input type="text" id="signup_name" /></p>
+                  <p>About: <input type="text" id="signup_about" /></p>
+                  <p><button>Create account</button></p>
+                </form>
 
-              <h3>Sign in</h3>
-              <form>
-                <p>Private key: <input type="text" id="signin_privatekey" /></p>
-                <p><button>Sign in</button></p>
-              </form>
+                <h3>Sign in</h3>
+                <form>
+                  <p>
+                    Private key: <input type="text" id="signin_privatekey" />
+                  </p>
+                  <p><button>Sign in</button></p>
+                </form>
+              </div>
+
+              <div id="loggedin">
+                <h2>Your public key: <span id="publicKey" /></h2>
+
+                <p>You can share your URL so others can see your map.</p>
+
+                <!--
+                <h3>Update your profile</h3>
+                <form>
+                  <p>Name: <input type="text" id="signup_name" /></p>
+                  <p>About: <input type="text" id="signup_about" /></p>
+                  <p><button>Save profile</button></p>
+                </form>
+                -->
+              </div>
             </div>
           </div>
         </div>
