@@ -1,6 +1,7 @@
 import L from "leaflet";
 import "leaflet.sidepanel";
 import { decode, encode } from "pluscodes";
+import { hasPrivateKey } from "./nostr/keys";
 import { createNote } from "./nostr/notes";
 import { _initRelays } from "./nostr/relays";
 import { subscribe } from "./nostr/subscribe";
@@ -39,17 +40,24 @@ const hackSidePanelClosed = () => {
 
 map.on("contextmenu", (event) => {
   console.log("#bG7CWu Right clicked or long pressed");
-  // TODO - Check for signup here
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
-  const createNoteCallback = (content) => {
-    // this is where we'd send back to Nostr the event
-    createNote({ content, plusCode });
-  };
-  L.popup()
-    .setLatLng(event.latlng)
-    .setContent(createPopupHtml(createNoteCallback))
-    .openOn(map);
+
+  hasPrivateKey().then((isLoggedIn) => {
+    if (!isLoggedIn) {
+      hackSidePanelOpen();
+      return;
+    }
+
+    const createNoteCallback = async (content) => {
+      createNote({ content, plusCode });
+    };
+
+    L.popup()
+      .setLatLng(event.latlng)
+      .setContent(createPopupHtml(createNoteCallback))
+      .openOn(map);
+  });
 });
 
 function addNoteToMap(note: Note) {
