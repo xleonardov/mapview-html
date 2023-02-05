@@ -7,3 +7,6 @@ export const DEFAULT_RELAYS = [
   "wss://public.nostr.swissrouting.com",
   "wss://nostr.slothy.win",
 ];
+export const PANEL_CONTAINER_ID = "panelID";
+export const BADGE_CONTAINER_ID = "badge";
+export const CURRENT_PUBLIC_KEY_ID = "current_public_key";

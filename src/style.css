@@ -22,3 +22,17 @@ body,
 #relays {
   width: 100%;
 }
+
+#badge {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  max-width: 50vw;
+  text-align: center;
+  z-index: 1000;
+  background-color: red;
+  border-bottom-left-radius: 1em;
+  border-bottom-right-radius: 1em;
+}

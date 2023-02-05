@@ -10,6 +10,11 @@ import {
   getUrlFromNpubPublicKey,
   getUrlFromPublickey,
 } from "./router";
+import {
+  PANEL_CONTAINER_ID,
+  BADGE_CONTAINER_ID,
+  CURRENT_PUBLIC_KEY_ID,
+} from "./constants";
 import { Note } from "./types";
 
 const map = L.map("map").setView([51.505, -0.09], 11);
@@ -26,7 +31,7 @@ L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
 
 // NOTE: The leaflet sidepanel plugin doesn't have types in `@types/leaflet` and
 // so we need to cast to any here.
-const PANEL_CONTAINER_ID = "panelID";
+
 (L.control as any).sidepanel(PANEL_CONTAINER_ID, { hasTabs: true }).addTo(map);
 
 // The leaflet sidepanel plugin doesn't export an API, so we've written our own
@@ -166,6 +171,18 @@ function createPopupHtml(createNoteCallback) {
 
 const mapStartup = async () => {
   const publicKey = getPublicKeyFromUrl();
+  const badge = L.DomUtil.get(BADGE_CONTAINER_ID) as HTMLElement;
+  if (publicKey) {
+    L.DomUtil.addClass(badge, "show");
+    L.DomUtil.removeClass(badge, "hide");
+    const publicKeyElement = L.DomUtil.get(
+      CURRENT_PUBLIC_KEY_ID
+    ) as HTMLSpanElement;
+    publicKeyElement.innerText = publicKey.substring(0, 5) + "...";
+  } else {
+    L.DomUtil.addClass(badge, "hide");
+    L.DomUtil.removeClass(badge, "show");
+  }
   await _initRelays();
   subscribe({ publicKey, onNoteReceived: addNoteToMap });
 };
