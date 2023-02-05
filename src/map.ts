@@ -8,7 +8,7 @@ import { subscribe } from "./nostr/subscribe";
 import {
   getPublicKeyFromUrl,
   getUrlFromNpubPublicKey,
-  getUrlFromPublickey,
+  getUrlFromPublicKeyAndView,
 } from "./router";
 import {
   PANEL_CONTAINER_ID,
@@ -59,7 +59,7 @@ map.on("contextmenu", async (event) => {
   const coords = { latitude: event.latlng.lat, longitude: event.latlng.lng };
   const plusCode = encode(coords, 6)!;
 
-  const viewingCurrentPublicKey = getPublicKeyFromUrl();
+  const { publicKey: viewingCurrentPublicKey } = getPublicKeyFromUrl();
   const myPublicKey = await getPublicKey();
   const viewingMyOwnMap =
     typeof viewingCurrentPublicKey === "undefined" ||
@@ -76,7 +76,7 @@ map.on("contextmenu", async (event) => {
 
   const popupContent = viewingMyOwnMap
     ? createPopupHtml(createNoteCallback)
-    : `View <a href="${getUrlFromPublickey({
+    : `View <a href="${getUrlFromPublicKeyAndView({
         publicKey: myPublicKey,
       })}">your own map</a> to add notes.`;
 
@@ -86,6 +86,28 @@ map.on("contextmenu", async (event) => {
     .openOn(map)
     .on("remove", (e) => selectedPlusCodePoly.remove());
 });
+
+function updateUrl() {
+  const center = map.getCenter();
+  const zoom = map.getZoom();
+  const view = {
+    lat: center.lat,
+    lng: center.lng,
+    zoom,
+  };
+  const { publicKey } = getPublicKeyFromUrl();
+  if (!publicKey) return;
+
+  const yourUrl = getUrlFromPublicKeyAndView({ publicKey, view });
+  const yourUrlHref = globalThis.document.getElementById(
+    "yourUrl"
+  ) as HTMLLinkElement;
+  yourUrlHref.href = yourUrl;
+  yourUrlHref.innerText = yourUrl;
+}
+
+map.on("moveend", updateUrl);
+map.on("zoomend", updateUrl);
 
 function generatePolygonFromPlusCode(plusCode: string) {
   const decoded = decode(plusCode);
@@ -170,7 +192,8 @@ function createPopupHtml(createNoteCallback) {
 }
 
 const mapStartup = async () => {
-  const publicKey = getPublicKeyFromUrl();
+  const { publicKey, view } = getPublicKeyFromUrl();
+  if (view) map.setView([view.lat, view.lng], view.zoom);
   const badge = L.DomUtil.get(BADGE_CONTAINER_ID) as HTMLElement;
   if (publicKey) {
     L.DomUtil.addClass(badge, "show");

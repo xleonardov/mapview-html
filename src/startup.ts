@@ -31,13 +31,6 @@ export const startup = async () => {
       globalThis.document.getElementById("nsecPrivateKey")!;
     nsecPrivateKeyCode.innerText = nsecPrivateKey;
 
-    const yourUrl = getUrlFromNpubPublicKey({ npubPublicKey });
-    const yourUrlHref = globalThis.document.getElementById(
-      "yourUrl"
-    ) as HTMLLinkElement;
-    yourUrlHref.href = yourUrl;
-    yourUrlHref.innerText = yourUrl;
-
     const profileNameInput = document.getElementById(
       "profile_name"
     ) as HTMLInputElement;
