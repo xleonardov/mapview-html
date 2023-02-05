@@ -17,7 +17,15 @@ import {
 } from "./constants";
 import { Note } from "./types";
 
-const map = L.map("map").setView([51.505, -0.09], 11);
+const map = L.map("map", {
+  zoomControl: false,
+}).setView([51.505, -0.09], 11);
+
+L.control
+  .zoom({
+    position: "bottomright",
+  })
+  .addTo(map);
 
 // this lets us add multiple notes to a single area
 const plusCodesWithPopupsAndNotes: {
