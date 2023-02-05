@@ -95,7 +95,7 @@ map.on("contextmenu", async (event) => {
     .on("remove", (e) => selectedPlusCodePoly.remove());
 });
 
-function updateUrl() {
+async function updateUrl() {
   const center = map.getCenter();
   const zoom = map.getZoom();
   const view = {
@@ -103,7 +103,7 @@ function updateUrl() {
     lng: center.lng,
     zoom,
   };
-  const { publicKey } = getPublicKeyFromUrl();
+  const publicKey = await getPublicKey();
   if (!publicKey) return;
 
   const yourUrl = getUrlFromPublicKeyAndView({ publicKey, view });

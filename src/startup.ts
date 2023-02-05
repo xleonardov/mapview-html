@@ -9,7 +9,6 @@ import {
   setPrivateKey,
 } from "./nostr/keys";
 import { subscribeAndGetProfile, setProfile } from "./nostr/profiles";
-import { getUrlFromNpubPublicKey } from "./router";
 
 export const startup = async () => {
   const isLoggedIn = await hasPrivateKey();
