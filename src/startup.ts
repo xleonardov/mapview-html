@@ -9,7 +9,7 @@ import {
   setPrivateKey,
 } from "./nostr/keys";
 import { subscribeAndGetProfile, setProfile } from "./nostr/profiles";
-
+// LeonV created
 export const startup = async () => {
   const isLoggedIn = await hasPrivateKey();
 
