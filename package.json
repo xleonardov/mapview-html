@@ -1,10 +1,10 @@
 {
-  "name": "nostr-map",
+  "name": "mapview",
   "version": "0.1.0",
-  "description": "NOSTR notes on maps",
+  "description": "Mapview with Html",
   "source": "src/index.html",
-  "repository": "git@github.com:chmac/nostr-map.git",
-  "author": "Simon & Callum",
+  "repository": "git@github.com:xleonardov/mapview-html.git",
+  "author": "LeonV",
   "license": "AGPL-3.0-or-later",
   "private": false,
   "scripts": {

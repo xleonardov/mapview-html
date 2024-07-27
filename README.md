@@ -1,3 +1,3 @@
-# nostr-map
+# Mapview with Html
 
-NOSTR notes on a map
+NOSTR notes on a map with nostr package
